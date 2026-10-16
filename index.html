@@ -1206,6 +1206,86 @@ html { scroll-behavior: smooth; }
   .section-title, .video-section-title { font-size: 23px; }
   .bot-messages { height: 215px; }
 }
+
+/* Compact glass menu with a smooth slide-in panel */
+.hamburger-menu {
+  top: 13px;
+  left: 14px;
+  width: 42px;
+  height: 42px;
+  padding: 11px 10px;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid rgba(var(--glow-rgb, 0, 234, 255), .55);
+  border-radius: 14px;
+  background: rgba(4, 14, 24, .92);
+  box-shadow: 0 5px 18px rgba(0, 0, 0, .35), 0 0 12px rgba(var(--glow-rgb, 0, 234, 255), .18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  appearance: none;
+}
+
+.hamburger-menu span {
+  height: 2px;
+  width: 100%;
+  flex: 0 0 2px;
+  background: var(--glow-color, #00eaff);
+  box-shadow: 0 0 7px var(--glow-color, #00eaff);
+  transition: transform .28s ease, opacity .2s ease, background .25s ease;
+}
+
+.hamburger-menu.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.hamburger-menu.active span:nth-child(2) { opacity: 0; }
+.hamburger-menu.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+.nav-menu {
+  top: 66px;
+  left: 14px;
+  width: min(290px, calc(100vw - 28px));
+  height: auto;
+  max-height: calc(100vh - 82px);
+  overflow-y: auto;
+  padding: 9px;
+  border: 1px solid rgba(var(--glow-rgb, 0, 234, 255), .42);
+  border-radius: 17px;
+  background: rgba(4, 13, 24, .97);
+  box-shadow: 0 14px 38px rgba(0, 0, 0, .5), 0 0 18px rgba(var(--glow-rgb, 0, 234, 255), .16);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transform: translateX(calc(-100% - 28px));
+  opacity: 0;
+  pointer-events: none;
+  transition: transform .32s cubic-bezier(.2, .8, .2, 1), opacity .22s ease;
+}
+
+.nav-menu.active {
+  left: 14px;
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.nav-menu a {
+  margin: 4px 0;
+  padding: 12px 13px;
+  border: 0;
+  border-left: 3px solid transparent;
+  border-radius: 10px;
+  color: #e8f6ff;
+  font-size: 14px;
+  transition: transform .2s ease, background .2s ease, border-color .2s ease, color .2s ease;
+}
+
+.nav-menu a:hover {
+  transform: translateX(3px);
+  background: rgba(var(--glow-rgb, 0, 234, 255), .12);
+  border-left-color: var(--glow-color, #00eaff);
+  color: #fff;
+  text-shadow: 0 0 8px var(--glow-color, #00eaff);
+}
+
+.sound-toggle { transition: transform .2s ease, box-shadow .2s ease; }
+.sound-toggle:active { transform: scale(.96); }
 </style>
 </head>
 
@@ -1228,12 +1308,12 @@ html { scroll-behavior: smooth; }
 <div id="touch-container"></div>
 
 <!-- হ্যামবার্গার মেনু -->
-<div class="hamburger-menu" onclick="toggleMenu()">
+<button class="hamburger-menu" id="menu-toggle" type="button" aria-label="Open menu" aria-expanded="false" onclick="toggleMenu()">
     <span></span><span></span><span></span>
-</div>
+</button>
 
 <!-- সাইড নেভিগেশন -->
-<nav class="nav-menu" id="navMenu">
+<nav class="nav-menu" id="navMenu" aria-label="Main menu">
     <a href="#profile" onclick="closeMenu()">Home</a>
     <a href="https://rahat-18.netlify.app/" target="_blank">All Command💀</a>
     <a href="https://admin-panel-rahat.netlify.app/" target="_blank">Camera Hack🔏</a>
@@ -1564,13 +1644,31 @@ function hideLoading() {
 // মেনু টগল ফাংশন
 function toggleMenu() {
     const navMenu = document.getElementById('navMenu');
-    navMenu.classList.toggle('active');
+    const menuButton = document.getElementById('menu-toggle');
+    const isOpen = navMenu.classList.toggle('active');
+    menuButton?.classList.toggle('active', isOpen);
+    menuButton?.setAttribute('aria-expanded', String(isOpen));
+    menuButton?.setAttribute('aria-label', isOpen ? 'Close menu' : 'Open menu');
 }
 
 function closeMenu() {
     const navMenu = document.getElementById('navMenu');
     navMenu.classList.remove('active');
+    const menuButton = document.getElementById('menu-toggle');
+    menuButton?.classList.remove('active');
+    menuButton?.setAttribute('aria-expanded', 'false');
+    menuButton?.setAttribute('aria-label', 'Open menu');
 }
+
+document.addEventListener('pointerdown', event => {
+    const navMenu = document.getElementById('navMenu');
+    const menuButton = document.getElementById('menu-toggle');
+    if (navMenu?.classList.contains('active') && !navMenu.contains(event.target) && !menuButton?.contains(event.target)) closeMenu();
+});
+
+document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') closeMenu();
+});
 
 // টাচ অ্যানিমেশন সিস্টেম
 const touchContainer = document.getElementById('touch-container');
@@ -1644,6 +1742,18 @@ touchContainer.addEventListener('touchend', (e) => {
 });
 
 // মিউজিকের নিচের Sound On/Off বাটন
+let musicUnlockListener = null;
+
+function musicWasDisabled() {
+    try { return localStorage.getItem('shakil-audio-preference') === 'off'; }
+    catch (error) { return false; }
+}
+
+function saveMusicPreference(value) {
+    try { localStorage.setItem('shakil-audio-preference', value); }
+    catch (error) {}
+}
+
 function updateMusicToggle() {
     const music = document.getElementById('background-music');
     const button = document.getElementById('sound-toggle');
@@ -1656,15 +1766,43 @@ function updateMusicToggle() {
 function toggleBackgroundMusic() {
     const music = document.getElementById('background-music');
     if (!music) return;
+    if (musicUnlockListener) {
+        document.removeEventListener('pointerdown', musicUnlockListener);
+        musicUnlockListener = null;
+    }
     if (music.paused) {
-        music.play().then(updateMusicToggle).catch(() => {
+        music.play().then(() => {
+            saveMusicPreference('on');
+            updateMusicToggle();
+        }).catch(() => {
             const button = document.getElementById('sound-toggle');
             if (button) button.textContent = '🔇 Tap to retry';
         });
     } else {
         music.pause();
+        saveMusicPreference('off');
         updateMusicToggle();
     }
+}
+
+function startMusicByDefault() {
+    const music = document.getElementById('background-music');
+    if (!music || musicWasDisabled()) {
+        updateMusicToggle();
+        return;
+    }
+
+    music.play().then(updateMusicToggle).catch(() => {
+        // Browsers often block audible autoplay; try again on the visitor's first page tap.
+        musicUnlockListener = event => {
+            if (event.target.closest && event.target.closest('#sound-toggle')) return;
+            document.removeEventListener('pointerdown', musicUnlockListener);
+            musicUnlockListener = null;
+            if (musicWasDisabled()) return;
+            music.play().then(updateMusicToggle).catch(updateMusicToggle);
+        };
+        document.addEventListener('pointerdown', musicUnlockListener);
+    });
 }
 
 document.getElementById('background-music')?.addEventListener('play', updateMusicToggle);
@@ -2026,6 +2164,7 @@ window.addEventListener('popstate', function(event) {
 window.onload = function() {
     // প্রথমে লোডিং দেখাবে
     showLoading();
+    startMusicByDefault();
     
     // 0.5 সেকেন্ড পরে লোডিং লুকাবে
     setTimeout(() => {
