@@ -3,7 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>😎 Personal Profile 😎</title>
+<title>—͞𝐒ʜᴀᴋɪʟ 𝐃ᴠᴇ !¡🎀</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
 
 <!-- Three.js এবং GSAP লাইব্রেরি যোগ -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
@@ -868,9 +871,27 @@ transition: transform 0.3s ease, opacity 0.3s ease;
 html { scroll-behavior: smooth; }
 
 .header h1 {
-  color: var(--glow-color, #00eaff);
-  text-shadow: 0 0 8px var(--glow-color, #00eaff), 0 0 22px var(--glow-color, #00eaff);
-  transition: color .25s ease, text-shadow .25s ease;
+  font-family: 'Orbitron', Arial, sans-serif;
+  font-size: clamp(28px, 7vw, 52px);
+  font-weight: 900;
+  letter-spacing: .025em;
+  background: linear-gradient(to bottom right, #fff, var(--glow-color, #00eaff), #8b5cf6);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  text-shadow: none;
+  transition: background .25s ease;
+}
+
+.header p {
+  font-family: 'Orbitron', Arial, sans-serif;
+  font-size: clamp(10px, 3vw, 13px);
+  font-weight: 600;
+  letter-spacing: .045em;
+  color: #fff;
+  text-shadow: 0 0 6px var(--glow-color, #00eaff), 0 0 14px rgba(var(--glow-rgb, 0, 234, 255), .4);
+  transition: text-shadow .25s ease;
 }
 
 .card {
@@ -896,12 +917,12 @@ html { scroll-behavior: smooth; }
   position: fixed;
   top: 15px;
   right: 14px;
-  gap: 8px;
+  gap: 10px;
 }
 
 .bg-btn {
-  width: 18px;
-  height: 18px;
+  width: 28px;
+  height: 28px;
   border: 2px solid rgba(255, 255, 255, .9);
   box-shadow: 0 0 8px currentColor;
 }
@@ -915,10 +936,18 @@ html { scroll-behavior: smooth; }
   text-shadow: 0 0 10px var(--glow-color, #00eaff);
 }
 
-.video-section-title,
-.video-title {
+.video-section-title {
   color: var(--glow-color, #00eaff);
   text-shadow: 0 0 9px var(--glow-color, #00eaff);
+}
+
+.video-title {
+  color: #fff;
+  background: transparent;
+  padding: 0;
+  font-weight: 400;
+  text-shadow: 0 0 8px var(--glow-color, #00eaff);
+  transition: text-shadow .25s ease;
 }
 
 .projects-section,
@@ -1340,8 +1369,8 @@ html { scroll-behavior: smooth; }
 <!-- প্রোফাইল সেকশন -->
 <div class="header">  
     <img src="https://files.catbox.moe/q2us0o.png" alt="profile">  
-    <h1>🤧𝗦𝗵𝗮𝗸𝗶𝗹 𝗗𝗲𝘃🤧</h1>  
-    <p>😀Developer By MD SHAKIL HOSSEN😎</p>  
+    <h1>Developer Shakil</h1>  
+    <p>Modified By MD SHAKIL HOSSEN</p>
 </div>  
 
 <div class="card">  
