@@ -1465,7 +1465,7 @@ html { scroll-behavior: smooth; }
 </nav>
 
 <!-- অডিও প্লেয়ার -->
-<audio id="background-music" src="https://files.catbox.moe/klgq67.mp3" loop></audio>
+<audio id="background-music" src="https://files.catbox.moe/klgq67.mp3" autoplay loop playsinline></audio>
 <button class="sound-toggle" id="sound-toggle" type="button" onclick="toggleBackgroundMusic()" aria-pressed="false">🔇 Sound Off</button>
 
 <!-- কালার চেঞ্জার -->
@@ -1887,13 +1887,9 @@ touchContainer.addEventListener('touchend', (e) => {
     }
 });
 
-// মিউজিকের নিচের Sound On/Off বাটন
+// Background music: try to start on every visit; keep a manual off choice for this page only.
 let musicUnlockListener = null;
-
-function musicWasDisabled() {
-    try { return localStorage.getItem('shakil-audio-preference') === 'off'; }
-    catch (error) { return false; }
-}
+let musicManuallyDisabled = false;
 
 function saveMusicPreference(value) {
     try { localStorage.setItem('shakil-audio-preference', value); }
@@ -1917,6 +1913,7 @@ function toggleBackgroundMusic() {
         musicUnlockListener = null;
     }
     if (music.paused) {
+        musicManuallyDisabled = false;
         music.play().then(() => {
             saveMusicPreference('on');
             updateMusicToggle();
@@ -1925,6 +1922,7 @@ function toggleBackgroundMusic() {
             if (button) button.textContent = '🔇 Tap to retry';
         });
     } else {
+        musicManuallyDisabled = true;
         music.pause();
         saveMusicPreference('off');
         updateMusicToggle();
@@ -1933,18 +1931,16 @@ function toggleBackgroundMusic() {
 
 function startMusicByDefault() {
     const music = document.getElementById('background-music');
-    if (!music || musicWasDisabled()) {
-        updateMusicToggle();
-        return;
-    }
+    if (!music) return;
+    musicManuallyDisabled = false;
 
+    // Try audible autoplay. Browsers may block it until the visitor interacts with the page.
     music.play().then(updateMusicToggle).catch(() => {
-        // Browsers often block audible autoplay; try again on the visitor's first page tap.
         musicUnlockListener = event => {
             if (event.target.closest && event.target.closest('#sound-toggle')) return;
             document.removeEventListener('pointerdown', musicUnlockListener);
             musicUnlockListener = null;
-            if (musicWasDisabled()) return;
+            if (musicManuallyDisabled) return;
             music.play().then(updateMusicToggle).catch(updateMusicToggle);
         };
         document.addEventListener('pointerdown', musicUnlockListener);
@@ -2074,7 +2070,7 @@ const PROJECTS = [
     url: "https://shakil-apk-store.vercel.app/",
     badge: "NEW",
     icon: "APK",
-    image: "https://files.catbox.moe/s3gj11.png",
+    image: "https://files.catbox.moe/fm82hc.png",
     color1: "#F97316",
     color2: "#9A3412"
   }
