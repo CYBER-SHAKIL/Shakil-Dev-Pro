@@ -2074,6 +2074,7 @@ const PROJECTS = [
     url: "https://shakil-apk-store.vercel.app/",
     badge: "NEW",
     icon: "APK",
+    image: "https://files.catbox.moe/s3gj11.png",
     color1: "#F97316",
     color2: "#9A3412"
   }
@@ -2117,13 +2118,18 @@ function renderProjects() {
     if ((project.icon || '').length > 2) thumbLabel.style.fontSize = '13px';
     thumb.appendChild(thumbLabel);
 
-    if (project.image) {
+    // Optional image URL: show it as the project icon; otherwise keep the normal text icon.
+    if (project.image && project.image.trim()) {
       const image = document.createElement('img');
       image.className = 'project-thumb-image';
-      image.src = project.image;
-      image.alt = project.name || 'Project preview';
+      image.src = project.image.trim();
+      image.alt = project.name ? `${project.name} icon` : 'Project icon';
       image.loading = 'lazy';
-      image.onerror = () => image.remove();
+      thumbLabel.style.display = 'none';
+      image.onerror = () => {
+        image.remove();
+        thumbLabel.style.display = 'flex';
+      };
       thumb.appendChild(image);
     }
 
