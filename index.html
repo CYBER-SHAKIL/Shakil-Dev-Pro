@@ -1073,8 +1073,12 @@ html { scroll-behavior: smooth; }
   transition: transform .3s ease;
 }
 
-.project-card:hover .project-thumb {
-  transform: scale(1.1) rotate(-3deg);
+/* Keep project icons completely still on hover or touch. */
+.project-card:hover .project-thumb,
+.project-card:active .project-thumb,
+.project-thumb:hover,
+.project-thumb:active {
+  transform: none !important;
 }
 
 .project-thumb::before {
