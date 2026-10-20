@@ -949,7 +949,8 @@ html { scroll-behavior: smooth; }
   font-size: clamp(16px, 4.2vw, 22px);
   font-weight: 700;
   letter-spacing: .025em;
-  text-shadow: 0 0 8px rgba(255, 255, 255, .4);
+  /* Match the subtle glow used by "Modified By MD SHAKIL HOSSEN". */
+  text-shadow: 0 0 6px var(--glow-color, #00eaff), 0 0 14px rgba(var(--glow-rgb, 0, 234, 255), .4);
   transition: text-shadow .25s ease;
 }
 
@@ -957,7 +958,7 @@ html { scroll-behavior: smooth; }
 .video-title.bengali-title {
   font-family: Arial, sans-serif;
   letter-spacing: 0;
-  text-shadow: 0 0 8px rgba(255, 255, 255, .4);
+  text-shadow: 0 0 6px var(--glow-color, #00eaff), 0 0 14px rgba(var(--glow-rgb, 0, 234, 255), .4);
 }
 
 .projects-section,
@@ -2046,7 +2047,6 @@ const PROJECTS = [
     badge: "HOT",
     icon: "</>",
     image: "https://files.catbox.moe/8bsw70.png",
-    fallbackIcon: "</>",
     color1: "#4D6BFE",
     color2: "#1E3A8A"
   },
@@ -2137,8 +2137,11 @@ function renderProjects() {
       thumbLabel.style.display = 'none';
       image.onerror = () => {
         image.remove();
-        thumbLabel.textContent = project.fallbackIcon || project.icon || 'WEB';
-        thumbLabel.style.display = 'flex';
+        // CodeVault should stay blank if its linked image cannot load.
+        if (project.name !== 'CodeVault') {
+          thumbLabel.textContent = project.fallbackIcon || project.icon || 'WEB';
+          thumbLabel.style.display = 'flex';
+        }
       };
       thumb.appendChild(image);
     }
