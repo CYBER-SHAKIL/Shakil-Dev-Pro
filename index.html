@@ -1112,7 +1112,9 @@ html { scroll-behavior: smooth; }
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
+  padding: 10px;
+  background: rgba(255, 255, 255, .94);
 }
 
 .project-name {
@@ -2060,6 +2062,7 @@ const PROJECTS = [
     url: "https://shakil-tampmail.netlify.app",
     badge: "HOT",
     icon: "TM",
+    image: "https://www.google.com/s2/favicons?domain=shakil-tampmail.netlify.app&sz=128",
     color1: "#06B6D4",
     color2: "#075985"
   },
@@ -2069,6 +2072,7 @@ const PROJECTS = [
     url: "https://shakil-api-server.vercel.app",
     badge: "HOT",
     icon: "QR",
+    image: "https://www.google.com/s2/favicons?domain=shakil-api-server.vercel.app&sz=128",
     color1: "#10A37F",
     color2: "#0B6E58"
   },
@@ -2078,6 +2082,7 @@ const PROJECTS = [
     url: "https://randomcountrys-name-generator.netlify.app",
     badge: "HOT",
     icon: "PG",
+    image: "https://www.google.com/s2/favicons?domain=randomcountrys-name-generator.netlify.app&sz=128",
     color1: "#8B5CF6",
     color2: "#5B21B6"
   },
