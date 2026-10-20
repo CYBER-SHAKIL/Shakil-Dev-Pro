@@ -1509,19 +1509,20 @@ html { scroll-behavior: smooth; }
   border-radius: 999px;
   background: rgba(0, 225, 255, .08);
   color: #83efff;
-  font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .17em;
-  text-transform: uppercase;
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: .02em;
+  text-transform: none;
 }
 .join-modal-spark { font-size: 15px; }
 .join-modal h2 {
   margin: 17px 0 9px;
   color: #fff;
-  font-family: 'Orbitron', Arial, sans-serif;
+  font-family: inherit;
   font-size: clamp(21px, 5vw, 27px);
-  line-height: 1.25;
-  letter-spacing: -.035em;
+  font-weight: 400;
+  line-height: 1.35;
+  letter-spacing: 0;
 }
 .join-modal-description {
   max-width: 310px;
@@ -2095,16 +2096,28 @@ function startMusicByDefault() {
     if (!music) return;
     musicManuallyDisabled = false;
 
-    // Try audible autoplay. Browsers may block it until the visitor interacts with the page.
+    // Try autoplay first. If the browser blocks sound, the first page tap/click
+    // unlocks playback (except an intentional tap on the sound toggle itself).
+    const removeUnlockListeners = () => {
+        document.removeEventListener('pointerdown', musicUnlockListener);
+        document.removeEventListener('keydown', musicUnlockListener);
+        musicUnlockListener = null;
+    };
     music.play().then(updateMusicToggle).catch(() => {
         musicUnlockListener = event => {
-            if (event.target.closest && event.target.closest('#sound-toggle')) return;
-            document.removeEventListener('pointerdown', musicUnlockListener);
-            musicUnlockListener = null;
-            if (musicManuallyDisabled) return;
-            music.play().then(updateMusicToggle).catch(updateMusicToggle);
+            const target = event.target;
+            if (target && target.closest && target.closest('#sound-toggle')) return;
+            if (musicManuallyDisabled) {
+                removeUnlockListeners();
+                return;
+            }
+            music.play().then(() => {
+                removeUnlockListeners();
+                updateMusicToggle();
+            }).catch(updateMusicToggle);
         };
         document.addEventListener('pointerdown', musicUnlockListener);
+        document.addEventListener('keydown', musicUnlockListener);
     });
 }
 
@@ -2693,7 +2706,7 @@ onSnapshot(messagesQuery, snap => {
   <div class="join-modal" role="document">
     <button class="join-modal-close" id="join-modal-close" type="button" aria-label="Close popup">×</button>
     <div class="join-modal-content">
-      <span class="join-modal-kicker"><span class="join-modal-spark">✦</span> CONNECT WITH SHAKIL</span>
+      <span class="join-modal-kicker"><span class="join-modal-spark">✦</span> Join Your Community</span>
       <h2 id="join-modal-title">Stay in the Loop 🚀</h2>
       <p class="join-modal-description" id="join-modal-description">Join the community and follow my latest projects, updates, and new videos.</p>
       <div class="join-modal-actions">
