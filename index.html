@@ -945,9 +945,19 @@ html { scroll-behavior: smooth; }
   color: #fff;
   background: transparent;
   padding: 0;
-  font-weight: 400;
-  text-shadow: 0 0 8px var(--glow-color, #00eaff);
+  font-family: 'Orbitron', 'Noto Sans Bengali', Arial, sans-serif;
+  font-size: clamp(16px, 4.2vw, 22px);
+  font-weight: 700;
+  letter-spacing: .025em;
+  text-shadow: 0 0 8px rgba(255, 255, 255, .4);
   transition: text-shadow .25s ease;
+}
+
+/* Preserve natural Bengali typography for titles written in Bengali. */
+.video-title.bengali-title {
+  font-family: Arial, sans-serif;
+  letter-spacing: 0;
+  text-shadow: 0 0 8px rgba(255, 255, 255, .4);
 }
 
 .projects-section,
@@ -2036,6 +2046,7 @@ const PROJECTS = [
     badge: "HOT",
     icon: "</>",
     image: "https://files.catbox.moe/8bsw70.png",
+    fallbackIcon: "</>",
     color1: "#4D6BFE",
     color2: "#1E3A8A"
   },
@@ -2062,7 +2073,7 @@ const PROJECTS = [
     description: "Generate strong passwords quickly and easily.",
     url: "https://randomcountrys-name-generator.netlify.app",
     badge: "HOT",
-    icon: "RN",
+    icon: "PG",
     color1: "#8B5CF6",
     color2: "#5B21B6"
   },
@@ -2126,6 +2137,7 @@ function renderProjects() {
       thumbLabel.style.display = 'none';
       image.onerror = () => {
         image.remove();
+        thumbLabel.textContent = project.fallbackIcon || project.icon || 'WEB';
         thumbLabel.style.display = 'flex';
       };
       thumb.appendChild(image);
@@ -2218,7 +2230,7 @@ function generateThumbnails() {
     const item = document.createElement('div');  
     item.className = 'video-item';  
     item.innerHTML = `  
-      <h2 class="video-title">${v.title}</h2>  
+      <h2 class="video-title${/[\u0980-\u09FF]/.test(v.title) ? ' bengali-title' : ''}">${v.title}</h2>  
       <div class="thumbnail-wrapper">  
         <img src="${v.thumbnail}" class="thumbnail">  
         <div class="play-icon">▶</div>  
