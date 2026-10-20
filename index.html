@@ -2134,14 +2134,13 @@ function renderProjects() {
       image.src = project.image.trim();
       image.alt = project.name ? `${project.name} icon` : 'Project icon';
       image.loading = 'lazy';
-      thumbLabel.style.display = 'none';
+      // Keep the normal icon underneath the image as a reliable fallback.
+      thumbLabel.textContent = project.fallbackIcon || project.icon || 'WEB';
+      thumbLabel.style.display = 'flex';
       image.onerror = () => {
         image.remove();
-        // CodeVault should stay blank if its linked image cannot load.
-        if (project.name !== 'CodeVault') {
-          thumbLabel.textContent = project.fallbackIcon || project.icon || 'WEB';
-          thumbLabel.style.display = 'flex';
-        }
+        thumbLabel.textContent = project.fallbackIcon || project.icon || 'WEB';
+        thumbLabel.style.display = 'flex';
       };
       thumb.appendChild(image);
     }
