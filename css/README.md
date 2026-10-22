@@ -1,3 +1,7 @@
-# Stylesheet migration note
+# Stylesheet organization
 
-The existing visual CSS remains embedded in `index.html` for this migration stage. The original document contains nested/malformed style-tag boundaries, so moving these rules blindly could change the current design. Keep the existing styling unchanged until a browser visual-regression check is available; then extract the rules into main.css, responsive.css, animations.css, chatbot.css and components.css in controlled passes.
+- `main.css` contains the original global, layout, responsive and animation rules.
+- `components.css` contains the join/subscribe modal styles.
+- `chatbot.css` contains the chatbot styling overrides, loaded last to preserve the original cascade.
+
+The original HTML had nested style-tag boundaries. The CSS was extracted while retaining the original rule order; responsive and animation rules remain alongside their original rule groups to avoid changing specificity or cascade behavior.
