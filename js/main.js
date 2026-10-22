@@ -1,9 +1,19 @@
 // ---------------- VIDEO VIEWER FUNCTIONALITY ----------------  
-const videos = [  
+let videos = [
   { title: "Developer Shakil🫡😎", thumbnail: "https://files.catbox.moe/y1nbfk.jpg", url: "এখানে আপনার ভিডিওর লিংক বসান" },
   { title: "Shakil Dev", thumbnail: "https://files.catbox.moe/q2us0o.png", url: "এখানে আপনার ভিডিওর লিংক বসান" },
-];  
-
+];
+async function loadAdminVideos() {
+  try {
+    const response = await fetch('/api/content', { cache: 'no-store' });
+    if (!response.ok) return;
+    const data = await response.json();
+    if (Array.isArray(data.videos) && data.videos.length) {
+      videos = data.videos.map(v => ({ title: v.title || 'Video', url: v.url, thumbnail: v.image || 'https://files.catbox.moe/q2us0o.png' }));
+      generateThumbnails();
+    }
+  } catch (error) { console.warn('Dynamic videos unavailable:', error); }
+}
 let isPlaying = false;  
 let currentVideoIndex = null;  
 let screenHistory = [];  
@@ -111,7 +121,8 @@ function goBack() {
   showScreen(previous);  
 }  
 
-document.getElementById('backButton').onclick = goBack;  
+document.getElementById('backButton').onclick = goBack;
+loadAdminVideos();  
 
 window.addEventListener("popstate", () => {  
   goBack();  
