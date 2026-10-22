@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="bn">
 <head>
 <meta name="google-site-verification" content="AIgWk9jUWuZnwAX9apVDavcgs_Os_HUpYnbcbyDGZnA">
 <meta charset="UTF-8">
@@ -1782,11 +1782,11 @@ html { scroll-behavior: smooth; }
       </div>
     </div>
     <div class="bot-messages" id="bot-messages" aria-live="polite">
-      <div class="bot-message">👋 হাই! আমি Shakil-এর profile bot। তার কাজ, skills বা channel নিয়ে জিজ্ঞেস করো।</div>
+      <div class="bot-message">👋 হ্যালো! আমি Shakil Dev AI। Shakil-এর কাজ, প্রজেক্ট, দক্ষতা বা যেকোনো সাধারণ প্রশ্ন করতে পারো। বাংলায় উত্তর দেব; ইংরেজিতে লিখলে ইংরেজিতে উত্তর দেব।</div>
     </div>
     <form class="bot-form" id="bot-form">
-      <input id="bot-input" type="text" autocomplete="off" placeholder="Type your message..." aria-label="Message Shakil Dev Bot">
-      <button type="submit">SEND</button>
+      <input id="bot-input" type="text" autocomplete="off" placeholder="আপনার প্রশ্ন লিখুন..." aria-label="Shakil Dev AI-কে প্রশ্ন করুন">
+      <button type="submit">পাঠান</button>
     </form>
   </div>
 </section>
@@ -2382,61 +2382,86 @@ function renderProjects() {
   });
 }
 
-// ---------------- BANGLA / ENGLISH PROFILE BOT ----------------
-function getShakilBotReply(message) {
-  const q = message.toLocaleLowerCase().normalize('NFKC').replace(/[^\p{L}\p{N}\s]/gu, ' ').replace(/\s+/g, ' ').trim();
-  const has = (...terms) => terms.some(term => q.includes(term));
+// ---------------- SHAKIL DEV AI ASSISTANT ----------------
+let shakilAiModel = null;
+let shakilChat = null;
+let shakilAiReady = false;
 
-  if (/^(hi|hello|hey|salam|assalamu alaikum)\b/.test(q) || has('হাই', 'হ্যালো', 'সালাম', 'আসসালামু')) {
-    return 'হাই! 👋 Shakil-এর নাম, কাজ, skills, project বা channel—যেটা জানতে চাও জিজ্ঞেস করো।';
+async function initializeShakilAI() {
+  try {
+    const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js');
+    const { getAI, getGenerativeModel, GoogleAIBackend } = await import('https://www.gstatic.com/firebasejs/11.10.0/firebase-ai.js');
+    const firebaseConfig = {
+      apiKey: "AIzaSyB3nsJhE6zdnYY8e9I5ZA1knkcCkZcF9UU",
+      authDomain: "shakil-dev-pro.firebaseapp.com",
+      databaseURL: "https://shakil-dev-pro-default-rtdb.asia-southeast1.firebasedatabase.app",
+      projectId: "shakil-dev-pro",
+      storageBucket: "shakil-dev-pro.firebasestorage.app",
+      messagingSenderId: "772040366682",
+      appId: "1:772040366682:web:d5d1e1335be6a6da59d663",
+      measurementId: "G-78W6SJHW4T"
+    };
+    const app = getApps().find(item => item.name === 'shakil-dev-ai') || initializeApp(firebaseConfig, 'shakil-dev-ai');
+    const ai = getAI(app, { backend: new GoogleAIBackend() });
+    // gemini-3.8-flash is not a confirmed public model ID; use a documented Flash model.
+    shakilAiModel = getGenerativeModel(ai, {
+      model: 'gemini-2.5-flash',
+      systemInstruction: `তুমি Shakil Dev, অর্থাৎ MD SHAKIL HOSSEN-এর Portfolio Website-এর AI Assistant। সবসময় ভদ্র, সহায়ক, স্বাভাবিক ও সংক্ষিপ্তভাবে উত্তর দেবে। ব্যবহারকারী বাংলায় বা Banglish-এ লিখলে বাংলায় উত্তর দেবে; ব্যবহারকারী ইংরেজিতে প্রশ্ন করলে ইংরেজিতে উত্তর দেবে। ব্যবহারকারী অন্য ভাষা চাইলে সেই ভাষায় উত্তর দেওয়ার চেষ্টা করবে। Shakil-এর সম্পর্কে নিশ্চিত নয় এমন ব্যক্তিগত তথ্য, achievements, skills, projects বা contact details বানিয়ে বলবে না। জানা তথ্য: নাম MD SHAKIL HOSSEN; পরিচিত নাম Shakil Dev; পরিচিতি App & Web Developer; profile-এ HTML, CSS, JavaScript, React.js, Node.js উল্লেখ আছে; অবস্থান Harinakundu, Jhenaidah-7310, Bangladesh। Public link: portfolio https://shakil-dev-pro.vercel.app/ ; GitHub https://github.com/CYBER-SHAKIL ; YouTube https://www.youtube.com/@ShakilX9X এবং https://www.youtube.com/@Shakil_FX ; TikTok https://www.tiktok.com/@shakil.5090 ; Telegram https://t.me/Shakil_X9X। তুমি Xrahat Dev নও এবং অন্য website-এর bot-এর পরিচয় নিজের বলে দাবি করবে না; তবে সাধারণ প্রশ্নে একজন AI assistant হিসেবে সাহায্য করবে। নিরাপদ ও সৎ উত্তর দেবে, secret key বা ব্যক্তিগত গোপন তথ্য প্রকাশ করবে না।`
+    });
+    shakilChat = shakilAiModel.startChat({ history: [] });
+    shakilAiReady = true;
+  } catch (error) {
+    console.error('Shakil AI initialization failed:', error);
+    shakilAiReady = false;
   }
-  if (has('where does shakil live', 'where is shakil from', 'shakil kothay thake', 'shakil kothay thake', 'বাড়ি কোথায়', 'বাড়ি কোথায়', 'কোথায় থাকে', 'কোথায় থাকে', 'ঠিকানা')) {
-    return 'Shakil-এর ব্যক্তিগত ঠিকানা এই bot-এ শেয়ার করা হয় না। তার developer profile, কাজ বা public channel নিয়ে জিজ্ঞেস করতে পারো।';
-  }
-  if (has('telegram', 'youtube', 'channel', 'চ্যানেল', 'ইউটিউব', 'টেলিগ্রাম')) {
-    return 'Shakil-এর Telegram এবং দুইটি YouTube channel-এর লিংক এই chat-এর ঠিক উপরের Channel card-গুলোতে আছে।';
-  }
-  if (has('skill', 'skills', 'programming', 'language', 'tech stack', 'কোন ভাষা', 'কী কী জানে', 'স্কিল', 'প্রোগ্রামিং')) {
-    return 'এই profile-এ Shakil-এর skill হিসেবে JavaScript, Python, HTML, CSS, Git ও REST APIs উল্লেখ আছে।';
-  }
-  if (has('project', 'projects', 'প্রজেক্ট')) {
-    return 'Shakil-এর project-গুলো My Projects অংশে card হিসেবে দেখাবে। নতুন project যোগ করার নিয়ম: HTML-এর script-এ const PROJECTS তালিকায় একটি object যোগ করো।';
-  }
-  if (has('website kar', 'website ta kar', 'site kar', 'who owns this website', 'whose website', 'ওয়েবসাইট কার', 'ওয়েবসাইট কার', 'সাইটটা কার', 'সাইট কার')) {
-    return 'এই profile website-টি MD Shakil Hossen-এর। তিনি Shakil Dev নাম ব্যবহার করেন।';
-  }
-  if (has('who is shakil', 'who is shakil dev', 'ke shakil', 'shakil ke', 'শাকিল কে', 'শাকিল দেব কে', 'পরিচয়', 'পরিচয়')) {
-    return 'Shakil Dev হলেন MD Shakil Hossen-এর developer profile। তিনি web development করেন; profile-এ JavaScript, Python, HTML ও CSS-এর কথা আছে।';
-  }
-  if (has('what does shakil do', 'what does he do', 'shakil ki kore', 'ki kaj kore', 'কী কাজ করে', 'কি কাজ করে', 'কী করে', 'কি করে', 'পেশা', 'profession', 'developer')) {
-    return 'Shakil নিজেকে developer হিসেবে পরিচয় দেন। তার profile-এ Web Developer, JavaScript, Python, HTML, CSS, Git ও REST APIs উল্লেখ আছে।';
-  }
-  if (has('thank', 'ধন্যবাদ', 'থ্যাংক')) {
-    return 'স্বাগতম! 😊 আর কিছু জানতে চাইলে লিখো।';
-  }
-  return 'এই প্রশ্নটার উত্তর আমার profile তথ্যের মধ্যে নেই—ভুল তথ্য বানিয়ে বলব না। Shakil, তার কাজ, skills, project বা channel নিয়ে জিজ্ঞেস করো।';
 }
+initializeShakilAI();
 
 function addBotMessage(text, sender) {
   const messages = document.getElementById('bot-messages');
-  if (!messages) return;
+  if (!messages) return null;
   const bubble = document.createElement('div');
   bubble.className = `bot-message${sender === 'user' ? ' user' : ''}`;
   bubble.textContent = text;
   messages.appendChild(bubble);
   messages.scrollTop = messages.scrollHeight;
+  return bubble;
 }
 
-document.getElementById('bot-form')?.addEventListener('submit', event => {
+function botReplyLanguage(message) {
+  return /[\\u0980-\\u09FF]/.test(message) ? 'bn' : 'auto';
+}
+
+document.getElementById('bot-form')?.addEventListener('submit', async event => {
   event.preventDefault();
   const input = document.getElementById('bot-input');
+  const submit = event.currentTarget.querySelector('button[type="submit"]');
   const message = input.value.trim();
   if (!message) return;
   addBotMessage(message, 'user');
   input.value = '';
-  addBotMessage(getShakilBotReply(message), 'bot');
+  if (submit) submit.disabled = true;
+  const waiting = addBotMessage('একটু অপেক্ষা করো…', 'bot');
+  try {
+    if (!shakilAiReady || !shakilChat) {
+      await initializeShakilAI();
+    }
+    if (!shakilChat) throw new Error('AI service did not initialize');
+    const langRule = botReplyLanguage(message) === 'bn'
+      ? 'Answer in natural Bengali. If the message is Banglish, answer in Bengali script.'
+      : 'Answer in the language the user used. If the user explicitly asks for English, answer in English.';
+    const result = await shakilChat.sendMessage(langRule + '\\nUser message: ' + message);
+    const response = result.response.text().trim();
+    waiting.textContent = response || 'দুঃখিত, এই মুহূর্তে উত্তর তৈরি করা যায়নি। আবার চেষ্টা করো।';
+  } catch (error) {
+    console.error('Shakil AI request failed:', error);
+    waiting.textContent = 'দুঃখিত, AI সার্ভিসে এখন সংযোগ করা যাচ্ছে না। কিছুক্ষণ পর আবার চেষ্টা করো।';
+  } finally {
+    if (submit) submit.disabled = false;
+    const messages = document.getElementById('bot-messages');
+    if (messages) messages.scrollTop = messages.scrollHeight;
+  }
 });
-
 // ---------------- VIDEO VIEWER FUNCTIONALITY ----------------  
 const videos = [  
   { title: "Developer Shakil🫡😎", thumbnail: "https://files.catbox.moe/y1nbfk.jpg", url: "এখানে আপনার ভিডিওর লিংক বসান" },
@@ -2630,131 +2655,6 @@ window.onload = function() {
 </script>
 
 <!-- ==================== তৃতীয় HTML সেকশন ==================== -->
-<section class="contact-section" id="contact-section">
-  <div class="contact-card">
-    <h2>𝐒ʜᴀᴋɪʟ 𝐃ᴇᴠ</h2>
-    <p class="contact-note">আপনার মেসেজ বস শাকিল ছাড়া অন্য কেউ দেখতে পারবে না ✅</p>
-
-    <div id="contact-inbox-container">
-      <div class="contact-loader-container" id="contact-loader-container">
-        <div class="contact-loader"></div>
-      </div>
-    </div>
-
-    <div class="contact-reply-container">
-      <input id="contact-message" placeholder="আপনার মেসেজ লিখুন..." />
-      <button id="contact-sendBtn">Send</button>
-    </div>
-
-    <div id="contact-status" class="contact-note" style="margin-top:4px;"></div>
-  </div>
-</section>
-
-<script type="module">
-const firebaseConfig = {
-  apiKey: "AIzaSyB3nsJhE6zdnYY8e9I5ZA1knkcCkZcF9UU",
-  authDomain: "shakil-dev-pro.firebaseapp.com",
-  databaseURL: "https://shakil-dev-pro-default-rtdb.asia-southeast1.firebasedatabase.app",
-  projectId: "shakil-dev-pro",
-  storageBucket: "shakil-dev-pro.firebasestorage.app",
-  messagingSenderId: "772040366682",
-  appId: "1:772040366682:web:d5d1e1335be6a6da59d663",
-  measurementId: "G-78W6SJHW4T"
-};
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.22.2/firebase-app.js";
-import {
-  getFirestore, doc, setDoc, collection, addDoc,
-  serverTimestamp, query, orderBy, onSnapshot, increment
-} from "https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore.js";
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-// Shared page-view total: every full document load adds one.
-// This client-side counter requires the correct Firebase project config and
-// Firestore rules that permit the needed public read/write operations.
-const totalViewEl = document.getElementById('total-view-count');
-const viewsRef = doc(db, 'siteStats', 'profileViews');
-onSnapshot(viewsRef, snapshot => {
-  if (totalViewEl) {
-    const total = snapshot.exists() ? Number(snapshot.data().totalViews || 0) : 0;
-    totalViewEl.textContent = new Intl.NumberFormat().format(total);
-  }
-}, error => {
-  console.warn('Shared view counter is unavailable:', error);
-  if (totalViewEl) totalViewEl.textContent = 'Unavailable';
-});
-
-setDoc(viewsRef, { totalViews: increment(1) }, { merge: true }).catch(error => {
-  console.warn('Could not update the shared view counter:', error);
-  if (totalViewEl) totalViewEl.textContent = 'Unavailable';
-});
-
-let uid = localStorage.getItem('private_user_id_v1');
-if (!uid) {
-  uid = 'u_' + Math.random().toString(36).slice(2,12);
-  localStorage.setItem('private_user_id_v1', uid);
-}
-
-const sendBtn = document.getElementById('contact-sendBtn');
-const status = document.getElementById('contact-status');
-const inboxEl = document.getElementById('contact-inbox-container');
-const messageInput = document.getElementById('contact-message');
-const loaderContainer = document.getElementById('contact-loader-container');
-
-sendBtn.addEventListener('click', sendMessage);
-messageInput.addEventListener('keypress', e => {
-  if(e.key === 'Enter') sendMessage();
-});
-
-async function sendMessage(){
-  const message = messageInput.value.trim();
-  if(!message) {
-    status.textContent = 'আবাল খালি মেসেজ পাঠানো যায় না🤣';
-    return;
-  }
-  sendBtn.disabled = true;
-  status.textContent = 'Sending...';
-
-  try {
-    const threadRef = doc(db, 'threads', uid);
-    await setDoc(threadRef, { userId: uid, lastMessageAt: serverTimestamp() }, { merge: true });
-
-    const messagesCol = collection(threadRef, 'messages');
-    await addDoc(messagesCol, { sentBy: 'user', message, timestamp: serverTimestamp() });
-
-    messageInput.value = '';
-    status.textContent = 'sent✅';
-  } catch(err){
-    console.error(err);
-    status.textContent = 'Send failed';
-  } finally{
-    sendBtn.disabled = false;
-    setTimeout(()=>status.textContent='', 3000);
-  }
-}
-
-// show loader initially
-loaderContainer.style.display = 'flex';
-
-const threadRef = doc(db, 'threads', uid);
-const messagesQuery = query(collection(threadRef, 'messages'), orderBy('timestamp', 'asc'));
-
-onSnapshot(messagesQuery, snap => {
-  inboxEl.innerHTML = '';
-  snap.forEach(docSnap => {
-    const d = docSnap.data();
-    const div = document.createElement('div');
-    div.className = 'contact-msg ' + (d.sentBy === 'admin' ? 'admin' : 'user');
-    div.textContent = d.message;
-    inboxEl.appendChild(div);
-  });
-  loaderContainer.style.display = 'none';
-  inboxEl.scrollTop = inboxEl.scrollHeight;
-});
-</script>
-
 <!-- Premium Telegram + YouTube invitation popup -->
 <div class="join-modal-backdrop" id="join-modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="join-modal-title" aria-describedby="join-modal-description">
   <div class="join-modal" role="document">
