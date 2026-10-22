@@ -140,3 +140,21 @@ window.onload = function() {
         initThreeScene();
     }, 500);
 };
+
+
+// Desktop-only: make the three skill cards quick links to My Projects.
+document.querySelectorAll('.card').forEach((card) => {
+  card.setAttribute('role', 'link');
+  card.setAttribute('tabindex', '0');
+  card.setAttribute('aria-label', 'View My Projects');
+  const goToProjects = () => {
+    document.getElementById('my-projects')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+  card.addEventListener('click', goToProjects);
+  card.addEventListener('keydown', (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      goToProjects();
+    }
+  });
+});
