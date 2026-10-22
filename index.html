@@ -1249,21 +1249,38 @@ html { scroll-behavior: smooth; }
 .bot-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 12px;
-  border-bottom: 1px solid rgba(255, 255, 255, .09);
+  gap: 12px;
+  padding: 18px 20px;
+  border-bottom: 1px solid rgba(148, 163, 184, .18);
+  background: #e8edf4;
 }
-
 .bot-avatar {
-  width: 40px;
-  height: 40px;
+  width: 64px;
+  height: 64px;
+  flex: 0 0 64px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid var(--glow-color, #00eaff);
+  object-position: center;
+  border: 3px solid #f8fafc;
+  box-shadow: 5px 5px 12px #c5ccd5, -5px -5px 12px #ffffff;
+  background: #e8edf4;
 }
-
-.bot-header h3 { color: #f3fbff; font-size: 14px; }
-.bot-status { margin-top: 4px; color: #70d79a; font-size: 10px; }
+.bot-header h3 {
+  margin: 0;
+  color: #263548;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: .2px;
+  line-height: 1.35;
+}
+.bot-status {
+  margin-top: 5px;
+  color: #7b8798;
+  font-size: 12px;
+  line-height: 1.4;
+}
+.bot-status::first-letter { color: #20b879; }
+.status-light { display:inline-block; width:9px; height:9px; margin-right:6px; border-radius:50%; background:#22c55e; box-shadow:0 0 8px rgba(34,197,94,.7); vertical-align:middle; }
 .bot-messages {
   height: 230px;
   padding: 12px;
@@ -1819,7 +1836,7 @@ html { scroll-behavior: smooth; }
       <img class="bot-avatar" src="https://files.catbox.moe/q2us0o.png" alt="MD SHAKIL HOSSEN — Shakil Dev">
       <div>
         <h3>MD SHAKIL HOSSEN</h3>
-        <div class="bot-status">● Active — উত্তর দিচ্ছে</div>
+        <div class="bot-status"><span class="status-light" aria-hidden="true"></span> Active — replies soon</div>
       </div>
     </div>
     <div class="bot-messages" id="bot-messages" aria-live="polite">
