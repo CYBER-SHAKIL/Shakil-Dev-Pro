@@ -1767,17 +1767,22 @@ html { scroll-behavior: smooth; }
   background:#0a1422!important;border-bottom:1px solid rgba(255,255,255,.1)!important;
 }
 .shakil-bot-section .bot-avatar{
-  width:90px!important;height:90px!important;min-width:90px!important;flex:0 0 90px!important;
-  object-fit:cover!important;object-position:center!important;border-radius:50%!important;
-  border:3px solid #fff!important;box-shadow:none!important;display:block!important;
+  width:64px!important;height:64px!important;min-width:64px!important;min-height:64px!important;
+  max-width:64px!important;max-height:64px!important;flex:0 0 64px!important;
+  aspect-ratio:1/1!important;object-fit:cover!important;object-position:center!important;
+  border-radius:50%!important;border:2px solid #fff!important;box-shadow:none!important;
+  display:block!important;
 }
 .shakil-bot-section .bot-header h3{font-size:15px!important;color:#f5f8fc!important;font-weight:700!important}
 .shakil-bot-section .bot-status{font-size:13px!important;color:#9fb0c3!important}
 .shakil-bot-section .bot-messages{height:345px!important;min-height:300px!important}
 @media(max-width:480px){
  .shakil-bot-section{width:calc(100% - 28px)!important;margin:22px auto!important}
- .shakil-bot-section .bot-header{min-height:76px!important;padding:14px 20px!important;gap:12px!important}
- .shakil-bot-section .bot-avatar{width:90px!important;height:90px!important;min-width:90px!important;flex-basis:90px!important;border-width:3px!important}
+ .shakil-bot-section .bot-header{min-height:76px!important;padding:14px 24px!important;gap:12px!important}
+ .shakil-bot-section .bot-avatar{
+   width:64px!important;height:64px!important;min-width:64px!important;min-height:64px!important;
+   max-width:64px!important;max-height:64px!important;flex-basis:64px!important;aspect-ratio:1/1!important;
+ }
  .shakil-bot-section .bot-header h3{font-size:15px!important}
  .shakil-bot-section .bot-status{font-size:13px!important}
  .shakil-bot-section .bot-messages{height:330px!important}
