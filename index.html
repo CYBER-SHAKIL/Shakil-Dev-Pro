@@ -1660,6 +1660,27 @@ html { scroll-behavior: smooth; }
 .shakil-bot-section .bot-form button:disabled{opacity:.6;cursor:wait}
 @media(max-width:480px){.shakil-bot-section{width:calc(100% - 24px);margin:20px auto}.shakil-bot-section .bot-messages{height:270px}}
 
+
+/* Shakil Dev bot: light neumorphic / 3D chat-card redesign */
+.shakil-bot-section{width:min(92%,520px)!important;margin:26px auto!important;font-family:Inter,system-ui,-apple-system,"Segoe UI",sans-serif}
+.shakil-bot-section .bot-card{background:#e8edf3!important;color:#243447!important;border:1px solid rgba(255,255,255,.85)!important;border-radius:28px!important;overflow:hidden!important;box-shadow:12px 12px 28px rgba(142,156,174,.28),-10px -10px 26px rgba(255,255,255,.95),inset 1px 1px 0 rgba(255,255,255,.85)!important}
+.shakil-bot-section .bot-header{padding:18px 20px!important;min-height:86px;border-bottom:1px solid rgba(148,163,184,.18)!important;background:rgba(255,255,255,.18)!important;gap:13px!important}
+.shakil-bot-section .bot-avatar{width:54px!important;height:54px!important;border:3px solid #f8fbff!important;box-shadow:4px 4px 10px rgba(104,121,144,.25),-3px -3px 8px #fff!important}
+.shakil-bot-section .bot-header h3{font-size:15px!important;font-weight:800!important;color:#263548!important;letter-spacing:.1px}
+.shakil-bot-section .bot-status{font-size:12px!important;color:#728197!important}
+.shakil-bot-section .bot-messages{height:360px!important;min-height:280px!important;padding:18px 16px!important;gap:12px!important;background:transparent!important;overflow-y:auto!important}
+.shakil-bot-section .bot-empty-state{margin:auto!important;width:100%!important;min-height:100%!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important;color:#8492a5!important;gap:12px!important;font-size:15px!important}
+.shakil-bot-section .bot-empty-state .empty-icon{font-size:34px!important;color:#8aa8ff!important;filter:drop-shadow(2px 3px 3px rgba(108,141,255,.18))}
+.shakil-bot-section .bot-message{max-width:86%!important;padding:12px 15px!important;color:#334155!important;background:linear-gradient(145deg,#f5f8fc,#e4eaf2)!important;border:1px solid rgba(255,255,255,.85)!important;border-radius:18px 18px 18px 5px!important;font-size:14px!important;line-height:1.6!important;box-shadow:5px 5px 12px rgba(148,163,184,.18),-3px -3px 9px rgba(255,255,255,.8)!important;white-space:pre-wrap;overflow-wrap:anywhere}
+.shakil-bot-section .bot-message.user{align-self:flex-end!important;background:linear-gradient(145deg,#3978ff,#2058df)!important;color:#fff!important;border:1px solid rgba(255,255,255,.5)!important;border-radius:18px 18px 5px 18px!important;box-shadow:4px 5px 12px rgba(37,99,235,.22)!important}
+.shakil-bot-section .bot-form{padding:14px 16px 17px!important;gap:10px!important;align-items:center!important;background:transparent!important;border-top:1px solid rgba(148,163,184,.18)!important}
+.shakil-bot-section .bot-form input{min-width:0!important;height:48px!important;flex:1!important;padding:0 16px!important;border-radius:24px!important;background:#e7edf4!important;color:#27364a!important;border:1px solid rgba(255,255,255,.9)!important;box-shadow:inset 4px 4px 9px rgba(148,163,184,.2),inset -4px -4px 9px rgba(255,255,255,.95)!important;outline:none!important;font-size:14px!important}
+.shakil-bot-section .bot-form input::placeholder{color:#8b98a9!important}
+.shakil-bot-section .bot-form input:focus{border-color:#9ab9ff!important;box-shadow:inset 3px 3px 7px rgba(148,163,184,.18),0 0 0 3px rgba(59,130,246,.1)!important}
+.shakil-bot-section .bot-form button{min-height:48px!important;padding:0 22px!important;border:0!important;border-radius:17px!important;background:linear-gradient(145deg,#202a37,#101720)!important;color:#fff!important;font-weight:750!important;box-shadow:4px 5px 10px rgba(100,116,139,.25),-2px -2px 6px rgba(255,255,255,.7)!important}
+.shakil-bot-section .bot-form button:disabled{opacity:.6!important;cursor:wait!important}
+@media(max-width:480px){.shakil-bot-section{width:calc(100% - 28px)!important}.shakil-bot-section .bot-messages{height:330px!important}.shakil-bot-section .bot-header{padding:15px!important}}
+
 </style>
 </head>
 
@@ -2472,12 +2493,12 @@ document.getElementById('bot-form')?.addEventListener('submit', async event => {
     const langRule = botReplyLanguage(message) === 'bn'
       ? 'Answer in natural Bengali. If the message is Banglish, answer in Bengali script.'
       : 'Answer in the language the user used. If the user explicitly asks for English, answer in English.';
-    const result = await shakilChat.sendMessage(langRule + '\\nUser message: ' + message);
+    const result = await shakilChat.sendMessage(langRule + '\nUser message: ' + message);
     const response = result.response.text().trim();
     waiting.textContent = response || 'দুঃখিত, এই মুহূর্তে উত্তর তৈরি করা যায়নি। আবার চেষ্টা করো।';
   } catch (error) {
     console.error('Shakil AI request failed:', error);
-    waiting.textContent = 'দুঃখিত, AI সার্ভিসে এখন সংযোগ করা যাচ্ছে না। কিছুক্ষণ পর আবার চেষ্টা করো।';
+    waiting.textContent = 'দুঃখিত, AI সার্ভিসে সংযোগ হচ্ছে না। Firebase AI চালু আছে কি না এবং API/পরিষেবা অনুমতি ঠিক আছে কি না যাচাই করে আবার চেষ্টা করো।';
   } finally {
     if (submit) submit.disabled = false;
     const messages = document.getElementById('bot-messages');
