@@ -540,40 +540,8 @@ function renderProjects() {
   });
 }
 
-// ---------------- SHAKIL DEV AI ASSISTANT ----------------
-let shakilAiModel = null;
-let shakilChat = null;
-let shakilAiReady = false;
-
-async function initializeShakilAI() {
-  try {
-    const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js');
-    const { getAI, getGenerativeModel, GoogleAIBackend } = await import('https://www.gstatic.com/firebasejs/12.5.0/firebase-ai.js');
-    const firebaseConfig = {
-      apiKey: "AIzaSyB3nsJhE6zdnYY8e9I5ZA1knkcCkZcF9UU",
-      authDomain: "shakil-dev-pro.firebaseapp.com",
-      databaseURL: "https://shakil-dev-pro-default-rtdb.asia-southeast1.firebasedatabase.app",
-      projectId: "shakil-dev-pro",
-      storageBucket: "shakil-dev-pro.firebasestorage.app",
-      messagingSenderId: "772040366682",
-      appId: "1:772040366682:web:d5d1e1335be6a6da59d663",
-      measurementId: "G-78W6SJHW4T"
-    };
-    const app = getApps().find(item => item.name === 'shakil-dev-ai') || initializeApp(firebaseConfig, 'shakil-dev-ai');
-    const ai = getAI(app, { backend: new GoogleAIBackend() });
-    // gemini-3.8-flash is not a confirmed public model ID; use a documented Flash model.
-    shakilAiModel = getGenerativeModel(ai, {
-      model: 'gemini-3.8-flash',
-      systemInstruction: `তুমি Shakil Dev, অর্থাৎ MD SHAKIL HOSSEN-এর Portfolio Website-এর AI Assistant। সবসময় ভদ্র, সহায়ক, স্বাভাবিক ও সংক্ষিপ্তভাবে উত্তর দেবে। ব্যবহারকারী বাংলায় বা Banglish-এ লিখলে বাংলায় উত্তর দেবে; ব্যবহারকারী ইংরেজিতে প্রশ্ন করলে ইংরেজিতে উত্তর দেবে। ব্যবহারকারী অন্য ভাষা চাইলে সেই ভাষায় উত্তর দেওয়ার চেষ্টা করবে। Shakil-এর সম্পর্কে নিশ্চিত নয় এমন ব্যক্তিগত তথ্য, achievements, skills, projects বা contact details বানিয়ে বলবে না। জানা তথ্য: নাম MD SHAKIL HOSSEN; পরিচিত নাম Shakil; পরিচিতি App & Web Developer; profile-এ HTML, CSS, JavaScript, React.js, Node.js উল্লেখ আছে; অবস্থান Harinakundu, Jhenaidah-7310, Bangladesh। Public link: portfolio https://shakil-dev-pro.vercel.app/ ; GitHub https://github.com/CYBER-SHAKIL ; YouTube https://www.youtube.com/@ShakilX9X এবং https://www.youtube.com/@Shakil_FX ; TikTok https://www.tiktok.com/@shakil.5090 ; Telegram https://t.me/Shakil_X9X। তুমি Xrahat Dev নও এবং অন্য website-এর bot-এর পরিচয় নিজের বলে দাবি করবে না; তবে সাধারণ প্রশ্নে একজন AI assistant হিসেবে সাহায্য করবে। নিরাপদ ও সৎ উত্তর দেবে, secret key বা ব্যক্তিগত গোপন তথ্য প্রকাশ করবে না।`
-    });
-    shakilChat = shakilAiModel.startChat({ history: [] });
-    shakilAiReady = true;
-  } catch (error) {
-    console.error('Shakil AI initialization failed:', error);
-    shakilAiReady = false;
-  }
-}
-initializeShakilAI();
+// ---------------- SHAKIL DEV AI ASSISTANT (SERVER API) ----------------
+const botHistory = [];
 
 function addBotMessage(text, sender) {
   const messages = document.getElementById('bot-messages');
@@ -588,10 +556,6 @@ function addBotMessage(text, sender) {
   return bubble;
 }
 
-function botReplyLanguage(message) {
-  return /[\u0980-\u09FF]/.test(message) ? 'bn' : 'auto';
-}
-
 document.getElementById('bot-form')?.addEventListener('submit', async event => {
   event.preventDefault();
   const input = document.getElementById('bot-input');
@@ -603,27 +567,30 @@ document.getElementById('bot-form')?.addEventListener('submit', async event => {
   if (submit) submit.disabled = true;
   const waiting = addBotMessage('একটু অপেক্ষা করো…', 'bot');
   try {
-    if (!shakilAiReady || !shakilChat) {
-      await initializeShakilAI();
+    const response = await fetch('/api/ai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ message, history: botHistory.slice(-8) })
+    });
+    const payload = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      const error = new Error(payload.error || 'AI request failed');
+      error.status = response.status;
+      error.code = payload.code;
+      throw error;
     }
-    if (!shakilChat) throw new Error('AI service did not initialize');
-    const langRule = botReplyLanguage(message) === 'bn'
-      ? 'Answer in natural Bengali. If the message is Banglish, answer in Bengali script.'
-      : 'Answer in the language the user used. If the user explicitly asks for English, answer in English.';
-    const result = await shakilChat.sendMessage(langRule + '\nUser message: ' + message);
-    const response = result.response.text().trim();
-    waiting.textContent = response || 'দুঃখিত, এই মুহূর্তে উত্তর তৈরি করা যায়নি। আবার চেষ্টা করো।';
+    const answer = String(payload.reply || '').trim();
+    waiting.textContent = answer || 'দুঃখিত, এই মুহূর্তে উত্তর তৈরি করা যায়নি। আবার চেষ্টা করো।';
+    botHistory.push({ role: 'user', text: message }, { role: 'model', text: answer });
+    if (botHistory.length > 12) botHistory.splice(0, botHistory.length - 12);
   } catch (error) {
     console.error('Shakil AI request failed:', error);
-    const detail = String(error?.message || error || '');
-    if (/api key|blocked|permission|403|permission_denied/i.test(detail)) {
-      waiting.textContent = 'AI সংযোগের অনুমতি পাওয়া যাচ্ছে না। Firebase Console → AI Logic-এ Gemini Developer API চালু আছে কি না এবং Firebase API key-তে Firebase AI Logic API অনুমোদিত কি না যাচাই করতে হবে।';
-    } else if (/quota|429|resource_exhausted/i.test(detail)) {
+    if (error.status === 503 || error.code === 'AI_NOT_CONFIGURED') {
+      waiting.textContent = 'AI সার্ভিস এখনো configure করা হয়নি। সার্ভারের environment settings-এ Gemini API key যোগ করতে হবে।';
+    } else if (error.status === 429) {
       waiting.textContent = 'এই মুহূর্তে AI ব্যবহারের সীমা পূর্ণ হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করো।';
-    } else if (/404|not found|model/i.test(detail)) {
-      waiting.textContent = 'AI model পাওয়া যাচ্ছে না। Firebase AI Logic-এর model configuration যাচাই করতে হবে।';
     } else {
-      waiting.textContent = 'দুঃখিত, AI এখন উত্তর দিতে পারেনি। সংযোগ বা Firebase AI Logic সেটআপে সমস্যা থাকতে পারে। কিছুক্ষণ পর আবার চেষ্টা করো।';
+      waiting.textContent = 'দুঃখিত, AI এখন উত্তর দিতে পারেনি। কিছুক্ষণ পর আবার চেষ্টা করো।';
     }
   } finally {
     if (submit) submit.disabled = false;
@@ -631,6 +598,23 @@ document.getElementById('bot-form')?.addEventListener('submit', async event => {
     if (messages) messages.scrollTop = messages.scrollHeight;
   }
 });
+
+async function updateVisitCount() {
+  const counter = document.getElementById('total-view-count');
+  if (!counter) return;
+  try {
+    const response = await fetch('/api/visits', { method: 'GET', cache: 'no-store' });
+    if (!response.ok) return;
+    const data = await response.json();
+    if (Number.isSafeInteger(data.totalVisits) && data.totalVisits >= 0) {
+      counter.textContent = data.totalVisits.toLocaleString();
+    }
+  } catch (error) {
+    console.warn('Visit counter unavailable:', error);
+  }
+}
+updateVisitCount();
+
 // ---------------- VIDEO VIEWER FUNCTIONALITY ----------------  
 const videos = [  
   { title: "Developer Shakil🫡😎", thumbnail: "https://files.catbox.moe/y1nbfk.jpg", url: "এখানে আপনার ভিডিওর লিংক বসান" },
