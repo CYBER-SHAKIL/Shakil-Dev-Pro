@@ -1,17 +1,19 @@
 # Shakil Official Portfolio
 
-Portfolio frontend with Vercel serverless API routes. The existing HTML layout and visual styling are intentionally retained while the AI and data features are moved toward server-side handling.
+Portfolio frontend with Vercel serverless API routes. The existing HTML layout and styling rules have been moved into external CSS files while retaining their cascade order. Browser behavior is split into focused JavaScript modules.
 
 ## Project structure
 
-- `index.html` — original portfolio markup and currently retained inline CSS
-- `assets/` — static image, icon and font directories
-- `css/` — stylesheet migration notes; CSS extraction is deferred to avoid changing the current visual output
-- `js/main.js` — existing browser interactions, now calls the server AI and visits endpoints
-- `js/join-modal.js`, `js/image-fallback.js` — extracted browser scripts
+- `index.html` — portfolio markup
+- `assets/` — static images, icons and fonts
+- `css/main.css` — global/layout styles, with responsive and animation rules kept in their original cascade groups
+- `css/components.css` — join/subscribe modal styles
+- `css/chatbot.css` — chatbot overrides, loaded last
+- `js/animations.js`, `js/theme.js`, `js/navigation.js`, `js/projects.js`, `js/chatbot.js`, `js/api-client.js` — browser-side modules
+- `js/main.js` — page initialization and video viewer behavior
 - `api/` — Vercel serverless endpoints
 - `server/services/` — AI and public project data logic
-- `server/utils/` — validation and Firebase Admin initialization
+- `server/utils/` — validation and Firebase Admin setup
 - `config/firebase-client.js` — public Firebase web configuration only
 
 ## Required Vercel environment variables
@@ -23,7 +25,7 @@ In Vercel → Project → Settings → Environment Variables, configure these fo
 - `FIREBASE_DATABASE_URL`: `https://shakil-dev-pro-default-rtdb.asia-southeast1.firebasedatabase.app`
 - `FIREBASE_SERVICE_ACCOUNT_JSON`: Firebase service-account JSON as a single-line JSON value, with the necessary Realtime Database access.
 
-`.env.example` documents the variable names only. Do not commit real keys, private keys or `.env` files. The Firebase web API key in `config/firebase-client.js` is public client configuration, not an Admin credential; protect the project with Firebase API restrictions and appropriate database rules.
+`.env.example` documents variable names only. Do not commit real keys, private keys or `.env` files. The Firebase web API key in `config/firebase-client.js` is public client configuration, not an Admin credential; protect the project with Firebase API restrictions and appropriate database rules.
 
 ## API endpoints
 
