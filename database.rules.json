@@ -1,0 +1,10 @@
+{
+  "rules": {
+    "portfolioContent": {
+      ".read": true,
+      ".write": "auth != null && auth.token.email === 'shakil.dev.pro@gmail.com' && auth.token.email_verified === true"
+    },
+    ".read": false,
+    ".write": false
+  }
+}
