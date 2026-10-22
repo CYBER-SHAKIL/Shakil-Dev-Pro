@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "vercel dev",
-    "check": "node --check api/ai.js && node --check api/projects.js && node --check api/contact.js && node --check api/visits.js && node --check server/services/ai-service.js && node --check server/services/project-service.js && node --check server/utils/validation.js"
+    "check": "node --check api/ai.js && node --check api/projects.js && node --check api/contact.js && node --check api/visits.js && node --check server/services/ai-service.js && node --check server/services/project-service.js && node --check server/utils/validation.js && node --check server/utils/firebase-admin.js && node --check js/animations.js && node --check js/theme.js && node --check js/projects.js && node --check js/api-client.js && node --check js/chatbot.js && node --check js/navigation.js && node --check js/main.js"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
