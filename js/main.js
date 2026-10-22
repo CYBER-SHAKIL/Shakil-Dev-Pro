@@ -1,7 +1,7 @@
 // ---------------- VIDEO VIEWER FUNCTIONALITY ----------------  
 let videos = [
   { title: "Developer Shakil🫡😎", thumbnail: "https://files.catbox.moe/y1nbfk.jpg", url: "এখানে আপনার ভিডিওর লিংক বসান" },
-  { title: "Shakil Dev", thumbnail: "https://files.catbox.moe/q2us0o.png", url: "এখানে আপনার ভিডিওর লিংক বসান" },
+  { title: "আমাকে খুঁজে পাবা না🙈👀", thumbnail: "https://files.catbox.moe/q2us0o.png", url: "এখানে আপনার ভিডিওর লিংক বসান" },
 ];
 async function loadAdminVideos() {
   try {
