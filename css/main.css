@@ -1445,3 +1445,98 @@ html { scroll-behavior: smooth; }
 
 .sound-toggle { transition: transform .2s ease, box-shadow .2s ease; }
 .sound-toggle:active { transform: scale(.96); }
+
+
+/* Desktop-only layout alignment. Mobile styles above remain unchanged. */
+@media (min-width: 1024px) {
+  .projects-section,
+  .video-section,
+  .channel-section,
+  .shakil-bot-section {
+    width: min(92%, 1120px);
+    max-width: 1120px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .project-grid {
+    width: 100%;
+    max-width: 1120px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 20px;
+    padding-left: 0;
+    padding-right: 0;
+  }
+
+  .video-section .mobile-wrapper {
+    width: 100%;
+    max-width: 1120px;
+    padding: 0;
+    overflow: visible;
+    border-radius: 0;
+  }
+
+  #thumbnailsContainer {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    gap: 20px;
+    width: 100%;
+  }
+
+  #thumbnailsContainer .video-item {
+    width: 100%;
+    max-width: none;
+    min-width: 0;
+    margin: 0 0 8px;
+  }
+
+  #thumbnailsContainer .thumbnail-wrapper {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+
+  .channel-section {
+    padding: 0;
+  }
+
+  .channel-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .channel-card {
+    min-width: 0;
+    min-height: 76px;
+    border-radius: 16px;
+    background: linear-gradient(145deg, rgba(4, 18, 29, .96), rgba(5, 12, 22, .96));
+    border-color: rgba(var(--glow-rgb, 0, 234, 255), .25);
+    box-shadow: 0 5px 18px rgba(0, 0, 0, .28), 0 0 8px rgba(var(--glow-rgb, 0, 234, 255), .08);
+  }
+
+  .channel-card:hover {
+    border-color: rgba(var(--glow-rgb, 0, 234, 255), .55);
+    box-shadow: 0 7px 20px rgba(0, 0, 0, .32), 0 0 12px rgba(var(--glow-rgb, 0, 234, 255), .16);
+  }
+
+  .channel-copy strong { font-size: 14px; }
+  .channel-copy small { font-size: 11px; }
+
+  .shakil-bot-section {
+    width: min(92%, 1120px);
+  }
+
+  .shakil-bot-section .bot-card {
+    width: 100%;
+  }
+
+  .card {
+    cursor: pointer;
+  }
+
+  .card:focus-visible {
+    outline: 2px solid var(--glow-color, #00eaff);
+    outline-offset: 4px;
+  }
+}
