@@ -27,6 +27,15 @@ In Vercel → Project → Settings → Environment Variables, configure these fo
 
 `.env.example` documents variable names only. Do not commit real keys, private keys or `.env` files. The Firebase web API key in `config/firebase-client.js` is public client configuration, not an Admin credential; protect the project with Firebase API restrictions and appropriate database rules.
 
+## Admin panel setup
+
+- Open `/admin.html` after deployment. Sign in with Firebase Authentication (email/password); password reset is available on the login form.
+- In Firebase Console → Authentication, enable **Email/Password**, create the administrator account for the approved admin email, and verify that email.
+- In Firebase Console → Realtime Database → Rules, publish the rules from `database.rules.json`. They permit public reads of portfolio content but only allow the verified admin email to write. Review the rules before publishing.
+- Keep `FIREBASE_PROJECT_ID`, `FIREBASE_DATABASE_URL`, and `FIREBASE_SERVICE_ACCOUNT_JSON` configured in Vercel as described above. Do not put service-account credentials or passwords in source code.
+- The panel manages project/video metadata and HTTPS URLs (including thumbnail URLs); it does not upload raw video files. Upload media to a trusted media host first, then paste its HTTPS URL.
+- Project entries are served by `/api/projects`; videos are served by `/api/content`. If Firebase Admin environment variables or database rules are not configured, the original hard-coded project catalogue remains as a fallback and dynamic videos may be empty.
+
 ## API endpoints
 
 - `POST /api/ai` — server-side Gemini response. Body: `{ "message": "...", "history": [{ "role": "user" | "model", "text": "..." }] }`.
