@@ -411,7 +411,7 @@ function changeColor(color){
 // শুধু name, description, url, icon, color1, color2 বদলালেই হবে।
 // image:"https://..." দিলে thumbnail-এ ছবি দেখাবে; image না দিলে icon-টাই থাকবে।
 // আগের শেষ object-এর পরে comma দেবে; একদম শেষ object-এর পরে comma লাগবে না।
-const PROJECTS = [
+let PROJECTS = [
   {
     name: "CodeVault",
     description: "Edit HTML or ZIP files with a live preview.",
@@ -801,6 +801,15 @@ window.onload = function() {
     setTimeout(() => {
         hideLoading();
         renderProjects();
+        fetch('/api/projects', { cache: 'no-store' })
+            .then(response => response.ok ? response.json() : Promise.reject(new Error('Projects API unavailable')))
+            .then(data => {
+                if (Array.isArray(data.projects)) {
+                    PROJECTS = data.projects;
+                    renderProjects();
+                }
+            })
+            .catch(error => console.warn('Using local project catalogue:', error));
         generateThumbnails();
         initThreeScene();
     }, 500);
