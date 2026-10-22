@@ -1,0 +1,20 @@
+{
+  "name": "shakil-official-portfolio",
+  "version": "2.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "vercel dev",
+    "check": "node --check api/ai.js && node --check api/projects.js && node --check api/contact.js && node --check api/visits.js && node --check server/services/ai-service.js && node --check server/services/project-service.js && node --check server/utils/validation.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "firebase-admin": "^13.5.0"
+  },
+  "devDependencies": {
+    "vercel": "^41.7.0"
+  }
+}
