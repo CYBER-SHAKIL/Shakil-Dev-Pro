@@ -1698,6 +1698,20 @@ html { scroll-behavior: smooth; }
 .shakil-bot-section .bot-form button:disabled{opacity:.6!important;cursor:wait!important}
 @media(max-width:480px){.shakil-bot-section{width:calc(100% - 28px)!important}.shakil-bot-section .bot-messages{height:330px!important}.shakil-bot-section .bot-header{padding:15px!important}}
 
+
+/* Final bot avatar refinement: small clean circle, no white outline */
+.shakil-bot-section .bot-header .bot-avatar{
+  width:44px!important;
+  height:44px!important;
+  flex:0 0 44px!important;
+  border:0!important;
+  outline:0!important;
+  box-shadow:none!important;
+  border-radius:50%!important;
+  object-fit:cover!important;
+  display:block!important;
+}
+
 </style>
 <style id="shakil-bot-neon-theme">
 .shakil-bot-section .bot-card{background:linear-gradient(145deg,rgba(8,23,35,.97),rgba(2,10,18,.98))!important;border:1px solid var(--glow-color,#00eaff)!important;border-radius:28px!important;overflow:hidden!important;box-shadow:0 0 8px var(--glow-color,#00eaff),0 0 18px rgba(0,234,255,.2),inset 0 0 16px rgba(255,255,255,.025)!important;transition:box-shadow .25s ease,border-color .25s ease!important}
@@ -2504,7 +2518,7 @@ async function initializeShakilAI() {
     const ai = getAI(app, { backend: new GoogleAIBackend() });
     // gemini-3.8-flash is not a confirmed public model ID; use a documented Flash model.
     shakilAiModel = getGenerativeModel(ai, {
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3.8-flash',
       systemInstruction: `তুমি Shakil Dev, অর্থাৎ MD SHAKIL HOSSEN-এর Portfolio Website-এর AI Assistant। সবসময় ভদ্র, সহায়ক, স্বাভাবিক ও সংক্ষিপ্তভাবে উত্তর দেবে। ব্যবহারকারী বাংলায় বা Banglish-এ লিখলে বাংলায় উত্তর দেবে; ব্যবহারকারী ইংরেজিতে প্রশ্ন করলে ইংরেজিতে উত্তর দেবে। ব্যবহারকারী অন্য ভাষা চাইলে সেই ভাষায় উত্তর দেওয়ার চেষ্টা করবে। Shakil-এর সম্পর্কে নিশ্চিত নয় এমন ব্যক্তিগত তথ্য, achievements, skills, projects বা contact details বানিয়ে বলবে না। জানা তথ্য: নাম MD SHAKIL HOSSEN; পরিচিত নাম Shakil Dev; পরিচিতি App & Web Developer; profile-এ HTML, CSS, JavaScript, React.js, Node.js উল্লেখ আছে; অবস্থান Harinakundu, Jhenaidah-7310, Bangladesh। Public link: portfolio https://shakil-dev-pro.vercel.app/ ; GitHub https://github.com/CYBER-SHAKIL ; YouTube https://www.youtube.com/@ShakilX9X এবং https://www.youtube.com/@Shakil_FX ; TikTok https://www.tiktok.com/@shakil.5090 ; Telegram https://t.me/Shakil_X9X। তুমি Xrahat Dev নও এবং অন্য website-এর bot-এর পরিচয় নিজের বলে দাবি করবে না; তবে সাধারণ প্রশ্নে একজন AI assistant হিসেবে সাহায্য করবে। নিরাপদ ও সৎ উত্তর দেবে, secret key বা ব্যক্তিগত গোপন তথ্য প্রকাশ করবে না।`
     });
     shakilChat = shakilAiModel.startChat({ history: [] });
@@ -2556,7 +2570,16 @@ document.getElementById('bot-form')?.addEventListener('submit', async event => {
     waiting.textContent = response || 'দুঃখিত, এই মুহূর্তে উত্তর তৈরি করা যায়নি। আবার চেষ্টা করো।';
   } catch (error) {
     console.error('Shakil AI request failed:', error);
-    waiting.textContent = 'দুঃখিত, AI সার্ভিসে সংযোগ হচ্ছে না। Firebase AI চালু আছে কি না এবং API/পরিষেবা অনুমতি ঠিক আছে কি না যাচাই করে আবার চেষ্টা করো।';
+    const detail = String(error?.message || error || '');
+    if (/api key|blocked|permission|403|permission_denied/i.test(detail)) {
+      waiting.textContent = 'AI সংযোগের অনুমতি পাওয়া যাচ্ছে না। Firebase Console → AI Logic-এ Gemini Developer API চালু আছে কি না এবং Firebase API key-তে Firebase AI Logic API অনুমোদিত কি না যাচাই করতে হবে।';
+    } else if (/quota|429|resource_exhausted/i.test(detail)) {
+      waiting.textContent = 'এই মুহূর্তে AI ব্যবহারের সীমা পূর্ণ হয়েছে। কিছুক্ষণ পরে আবার চেষ্টা করো।';
+    } else if (/404|not found|model/i.test(detail)) {
+      waiting.textContent = 'AI model পাওয়া যাচ্ছে না। Firebase AI Logic-এর model configuration যাচাই করতে হবে।';
+    } else {
+      waiting.textContent = 'দুঃখিত, AI এখন উত্তর দিতে পারেনি। সংযোগ বা Firebase AI Logic সেটআপে সমস্যা থাকতে পারে। কিছুক্ষণ পর আবার চেষ্টা করো।';
+    }
   } finally {
     if (submit) submit.disabled = false;
     const messages = document.getElementById('bot-messages');
