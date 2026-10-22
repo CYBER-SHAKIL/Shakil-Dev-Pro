@@ -18,14 +18,14 @@
 <meta property="og:title" content="Shakil Dev | Official Developer Portfolio">
 <meta property="og:description" content="Welcome to Shakil Dev's official developer portfolio. Explore web development projects, skills, creative work, and digital experiences by MD SHAKIL HOSSEN — App &amp; Web Developer | HTML, CSS, JavaScript, React.js &amp; Node.js. Harinakundu, Jhenaidah-7310, Bangladesh. Shakil © 2026.">
 <meta property="og:url" content="https://shakil-dev-pro.vercel.app/">
-<meta property="og:image" content="https://files.catbox.moe/q2us0o.png">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/288226114?v=4">
 <meta property="og:image:alt" content="Shakil Dev profile image">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Shakil Dev | Official Developer & Shakil DevHub">
 <meta name="twitter:description" content="Welcome to Shakil Dev's official developer portfolio. Explore web development projects, skills, creative work, and digital experiences by MD SHAKIL HOSSEN — App &amp; Web Developer | HTML, CSS, JavaScript, React.js &amp; Node.js. Harinakundu, Jhenaidah-7310, Bangladesh. Shakil © 2026.">
-<meta name="twitter:image" content="https://files.catbox.moe/q2us0o.png">
-<link rel="icon" href="https://files.catbox.moe/q2us0o.png" type="image/png">
-<link rel="apple-touch-icon" href="https://files.catbox.moe/q2us0o.png">
+<meta name="twitter:image" content="https://avatars.githubusercontent.com/u/288226114?v=4">
+<link rel="icon" href="https://avatars.githubusercontent.com/u/288226114?v=4" type="image/png">
+<link rel="apple-touch-icon" href="https://avatars.githubusercontent.com/u/288226114?v=4">
 
 <script type="application/ld+json">
 {
@@ -43,7 +43,7 @@
   "name": "MD SHAKIL HOSSEN",
   "alternateName": ["Shakil", "Shakil Dev", "Shakil Dev Pro", "Shakil DevHub", "Developer Shakil", "Shakil Developer", "Shakil Portfolio", "Shakil Store", "Shakil APK Store", "Shakil APK Store | Official"],
   "url": "https://shakil-dev-pro.vercel.app/",
-  "image": "https://files.catbox.moe/q2us0o.png",
+  "image": "https://avatars.githubusercontent.com/u/288226114?v=4",
   "jobTitle": "Developer",
   "description": "Official developer portfolio of MD SHAKIL HOSSEN, known as Shakil Dev, based in Harinakundu, Jhenaidah-7310, Bangladesh.",
   "address": {"@type":"PostalAddress","addressLocality":"Harinakundu","addressRegion":"Jhenaidah","postalCode":"7310","addressCountry":"BD"},
@@ -1651,7 +1651,7 @@ html { scroll-behavior: smooth; }
         <div class="ring"></div>
         <div class="ring"></div>
         <div class="ring"></div>
-        <img src="https://files.catbox.moe/q2us0o.png" class="image" alt="Loading">
+        <img src="https://avatars.githubusercontent.com/u/288226114?v=4" class="image" alt="Loading">
     </div>
 </div>
 
@@ -1693,7 +1693,7 @@ html { scroll-behavior: smooth; }
 
 <!-- প্রোফাইল সেকশন -->
 <div class="header">  
-    <img src="https://files.catbox.moe/q2us0o.png" alt="profile">  
+    <img src="https://avatars.githubusercontent.com/u/288226114?v=4" alt="profile">  
     <h1>Developer Shakil</h1>  
     <p>Modified By MD SHAKIL HOSSEN</p>
 </div>  
@@ -1775,7 +1775,7 @@ html { scroll-behavior: smooth; }
 <section class="shakil-bot-section" aria-label="Shakil Dev profile bot">
   <div class="bot-card">
     <div class="bot-header">
-      <img class="bot-avatar" src="https://files.catbox.moe/q2us0o.png" alt="Shakil Dev Bot profile">
+      <img class="bot-avatar" src="https://avatars.githubusercontent.com/u/288226114?v=4" alt="Shakil Dev Bot profile">
       <div>
         <h3>Shakil Dev Bot</h3>
         <div class="bot-status">● Online · Instant replies</div>
@@ -2440,7 +2440,7 @@ document.getElementById('bot-form')?.addEventListener('submit', event => {
 // ---------------- VIDEO VIEWER FUNCTIONALITY ----------------  
 const videos = [  
   { title: "Developer Shakil🫡😎", thumbnail: "https://files.catbox.moe/y1nbfk.jpg", url: "এখানে আপনার ভিডিওর লিংক বসান" },
-  { title: "Shakil Dev", thumbnail: "https://files.catbox.moe/q2us0o.png", url: "এখানে আপনার ভিডিওর লিংক বসান" },
+  { title: "Shakil Dev", thumbnail: "https://avatars.githubusercontent.com/u/288226114?v=4", url: "এখানে আপনার ভিডিওর লিংক বসান" },
 ];  
 
 let isPlaying = false;  
@@ -2799,6 +2799,19 @@ onSnapshot(messagesQuery, snap => {
   laterButton.addEventListener('click', closePopup);
   backdrop.addEventListener('click', event => { if (event.target === backdrop) closePopup(); });
   document.addEventListener('keydown', event => { if (event.key === 'Escape' && backdrop.classList.contains('is-visible')) closePopup(); });
+})();
+</script>
+<script>
+(() => {
+  const fallbackUrl = "https://avatars.githubusercontent.com/u/288226114?v=4";
+  const fallback = img => {
+    if (!(img instanceof HTMLImageElement) || img.dataset.fallbackApplied === '1') return;
+    img.dataset.fallbackApplied = '1';
+    img.src = fallbackUrl;
+    img.alt = img.alt || 'Shakil Dev';
+  };
+  document.querySelectorAll('img').forEach(img => img.addEventListener('error', () => fallback(img)));
+  document.addEventListener('error', event => fallback(event.target), true);
 })();
 </script>
 </body>
