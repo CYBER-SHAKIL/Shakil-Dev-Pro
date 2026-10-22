@@ -1,0 +1,11 @@
+/* Keep the existing one-column mobile gallery. */
+#thumbnailsContainer{width:100%;display:grid;grid-template-columns:minmax(0,1fr);gap:0}
+#thumbnailsContainer .video-item{width:100%;max-width:300px;justify-self:center;min-width:0}
+#thumbnailsContainer .video-title{max-width:100%;overflow-wrap:anywhere}
+@media (min-width:900px){
+ .mobile-wrapper{max-width:1100px;padding-left:28px;padding-right:28px}
+ #thumbnailsContainer{grid-template-columns:repeat(2,minmax(0,1fr));column-gap:28px;row-gap:30px;align-items:start}
+ #thumbnailsContainer .video-item{max-width:100%;margin-bottom:0}
+ #thumbnailsContainer .thumbnail-wrapper{width:100%;height:auto;aspect-ratio:16/9}
+ #thumbnailsContainer .video-title{width:100%;font-size:clamp(16px,1.5vw,22px)}
+}
