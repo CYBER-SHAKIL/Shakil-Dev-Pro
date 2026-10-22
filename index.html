@@ -1640,6 +1640,26 @@ html { scroll-behavior: smooth; }
   .join-modal-link, .join-modal-close { transition: none; }
 }
 
+
+/* Shakil Dev chat — compact dark messenger layout */
+.shakil-bot-section{width:min(100% - 28px,620px);margin:26px auto}
+.shakil-bot-section .bot-card{width:100%;max-width:none;overflow:hidden;border-radius:22px;background:#050b14;border:1px solid rgba(0,234,255,.32);box-shadow:0 14px 36px rgba(0,0,0,.38)}
+.shakil-bot-section .bot-header{min-height:76px;padding:14px 16px;gap:12px;background:#0a1422;border-bottom:1px solid rgba(255,255,255,.09)}
+.shakil-bot-section .bot-avatar{width:48px;height:48px;flex:0 0 48px}
+.shakil-bot-section .bot-header h3{font-size:15px;color:#f5f8fc}
+.shakil-bot-section .bot-status{font-size:12px;color:#91a4b8}
+.shakil-bot-section .bot-messages{height:280px;min-height:220px;padding:18px 14px;gap:12px;background:#070e18;overflow-y:auto}
+.shakil-bot-section .bot-empty-state{margin:auto;width:100%;min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#8192a8;gap:12px;font-size:14px}
+.shakil-bot-section .bot-empty-state .empty-icon{font-size:36px;color:#6c8dff}
+.shakil-bot-section .bot-message{max-width:86%;padding:11px 13px;color:#e9f1fa;background:#182536;border-radius:16px 16px 16px 5px;font-size:14px;line-height:1.55}
+.shakil-bot-section .bot-message.user{background:#07303b;border:1px solid rgba(0,234,255,.65);border-radius:16px 16px 5px 16px;color:#f2fcff}
+.shakil-bot-section .bot-form{padding:12px;gap:10px;align-items:stretch;background:#080f19;border-top:1px solid rgba(255,255,255,.09)}
+.shakil-bot-section .bot-form input{min-height:48px;padding:12px 14px;font-size:14px;border-radius:15px;color:#f4f8ff;background:#111c2b;border:1px solid #27364a}
+.shakil-bot-section .bot-form input::placeholder{color:#8493a6}
+.shakil-bot-section .bot-form button{min-width:76px;min-height:48px;padding:0 16px;border-radius:14px;color:#001019;font-size:14px;font-weight:800}
+.shakil-bot-section .bot-form button:disabled{opacity:.6;cursor:wait}
+@media(max-width:480px){.shakil-bot-section{width:calc(100% - 24px);margin:20px auto}.shakil-bot-section .bot-messages{height:270px}}
+
 </style>
 </head>
 
@@ -1775,18 +1795,18 @@ html { scroll-behavior: smooth; }
 <section class="shakil-bot-section" aria-label="Shakil Dev profile bot">
   <div class="bot-card">
     <div class="bot-header">
-      <img class="bot-avatar" src="https://avatars.githubusercontent.com/u/288226114?v=4" alt="Shakil Dev Bot profile">
+      <img class="bot-avatar" src="https://files.catbox.moe/q2us0o.png" alt="MD SHAKIL HOSSEN — Shakil Dev">
       <div>
-        <h3>Shakil Dev Bot</h3>
-        <div class="bot-status">● Online · Instant replies</div>
+        <h3>MD SHAKIL HOSSEN</h3>
+        <div class="bot-status">● Active — উত্তর দিচ্ছে</div>
       </div>
     </div>
     <div class="bot-messages" id="bot-messages" aria-live="polite">
-      <div class="bot-message">👋 হ্যালো! আমি Shakil Dev AI। Shakil-এর কাজ, প্রজেক্ট, দক্ষতা বা যেকোনো সাধারণ প্রশ্ন করতে পারো। বাংলায় উত্তর দেব; ইংরেজিতে লিখলে ইংরেজিতে উত্তর দেব।</div>
+      <div class="bot-empty-state" id="bot-empty-state"><span class="empty-icon" aria-hidden="true">●●●</span><span>কোনো প্রশ্ন থাকলে message করুন</span></div>
     </div>
     <form class="bot-form" id="bot-form">
-      <input id="bot-input" type="text" autocomplete="off" placeholder="আপনার প্রশ্ন লিখুন..." aria-label="Shakil Dev AI-কে প্রশ্ন করুন">
-      <button type="submit">পাঠান</button>
+      <input id="bot-input" type="text" autocomplete="off" placeholder="Type your message..." aria-label="Shakil Dev AI-কে প্রশ্ন করুন">
+      <button type="submit">Send</button>
     </form>
   </div>
 </section>
@@ -2389,8 +2409,8 @@ let shakilAiReady = false;
 
 async function initializeShakilAI() {
   try {
-    const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js');
-    const { getAI, getGenerativeModel, GoogleAIBackend } = await import('https://www.gstatic.com/firebasejs/11.10.0/firebase-ai.js');
+    const { initializeApp, getApps } = await import('https://www.gstatic.com/firebasejs/12.5.0/firebase-app.js');
+    const { getAI, getGenerativeModel, GoogleAIBackend } = await import('https://www.gstatic.com/firebasejs/12.5.0/firebase-ai.js');
     const firebaseConfig = {
       apiKey: "AIzaSyB3nsJhE6zdnYY8e9I5ZA1knkcCkZcF9UU",
       authDomain: "shakil-dev-pro.firebaseapp.com",
@@ -2420,6 +2440,8 @@ initializeShakilAI();
 function addBotMessage(text, sender) {
   const messages = document.getElementById('bot-messages');
   if (!messages) return null;
+  const emptyState = document.getElementById('bot-empty-state');
+  if (emptyState) emptyState.remove();
   const bubble = document.createElement('div');
   bubble.className = `bot-message${sender === 'user' ? ' user' : ''}`;
   bubble.textContent = text;
@@ -2429,7 +2451,7 @@ function addBotMessage(text, sender) {
 }
 
 function botReplyLanguage(message) {
-  return /[\\u0980-\\u09FF]/.test(message) ? 'bn' : 'auto';
+  return /[\u0980-\u09FF]/.test(message) ? 'bn' : 'auto';
 }
 
 document.getElementById('bot-form')?.addEventListener('submit', async event => {
